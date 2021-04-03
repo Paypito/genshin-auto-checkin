@@ -1,13 +1,14 @@
 import puppeteer from "puppeteer";
 import schedule from "node-schedule";
 import fs from "fs";
+import * as config from "./config.json";
 
 let browser: puppeteer.Browser;
 let cookies: any[] = [];
 let numberOfDay: number;
 let received: number;
-let hour = 18;
-let minute = 10;
+let hour = config.hour;
+let minute = config.minute;
 
 (async () => {
   console.log("Démarrage du bot ...");
@@ -21,7 +22,7 @@ async function login() {
   console.log("Vous n'êtes pas connecté !");
   const page = await browser.newPage();
   await page.goto(
-    "https://webstatic-sea.mihoyo.com/ys/event/signin-sea/index.html?act_id=e202102251931481"
+    config.url
   );
   while(!isLogged()) {
     await page.cookies()
@@ -45,7 +46,7 @@ async function checkRewards() {
   await page.setCookie(...cookies);
   cookies = await page.cookies();
   await page.goto(
-    "https://webstatic-sea.mihoyo.com/ys/event/signin-sea/index.html?act_id=e202102251931481"
+    config.url
   ).then(() => {
     getRewards(page);
     schedule.scheduleJob({hour: hour, minute: minute}, async() => {
