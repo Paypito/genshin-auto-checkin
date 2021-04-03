@@ -19,6 +19,8 @@ let minute = config.minute;
 })();
 
 async function login() {
+  config.linux ? 
+  browser = await puppeteer.launch({ headless: false, executablePath: config.chromium}) :
   browser = await puppeteer.launch({ headless: false });
   console.log("Vous n'êtes pas connecté !");
   const page = await browser.newPage();
@@ -42,7 +44,11 @@ async function login() {
 }
 
 async function checkRewards() {
-  config.debug ? browser = await puppeteer.launch({ headless: false }) : browser = await puppeteer.launch();
+  if(config.linux) {
+    config.debug ? browser = await puppeteer.launch({ headless: false, executablePath: config.chromium}) : browser = await puppeteer.launch({executablePath: config.chromium});
+  } else {
+    config.debug ? browser = await puppeteer.launch({ headless: false }) : browser = await puppeteer.launch();
+  }
   const page = await browser.newPage();
   await page.setCookie(...cookies);
   cookies = await page.cookies();
