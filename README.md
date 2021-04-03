@@ -11,4 +11,4 @@ npm start
 ```
 
 ## Configuration
-You can change the time when the reward will be claimed in the config.json
+You can change the time when the reward will be claimed and the link in the config.json

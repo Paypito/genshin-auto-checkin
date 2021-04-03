@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer";
 import schedule from "node-schedule";
 import fs from "fs";
+import dayjs from 'dayjs';
 import * as config from "./config.json";
 
 let browser: puppeteer.Browser;
@@ -41,7 +42,7 @@ async function login() {
 }
 
 async function checkRewards() {
-  browser = await puppeteer.launch();
+  config.debug ? browser = await puppeteer.launch({ headless: false }) : browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.setCookie(...cookies);
   cookies = await page.cookies();
@@ -69,6 +70,7 @@ async function getRewards(_page: puppeteer.Page) {
     let active = (await _page.$$('div.components-home-assets-__sign-content_---active---36unD3')).length;
     
     if(numberOfDay == 0) {
+      console.log("Une erreur est survenue lors du chargement de la page ! Vérifiez que l'url encodée dans config.json est correcte");
       getRewards(_page);
     } else {
       console.log("Vous avez récupéré " + received + " sur " + numberOfDay + " récompenses");
@@ -86,7 +88,7 @@ async function getRewards(_page: puppeteer.Page) {
       } else {
         console.log("Aucune récompense disponible");
       }
-      console.log("Prochaine tentative à " + hour + ":" + minute);
+      console.log("Prochaine tentative à", dayjs().hour(hour).minute(minute).format('HH:mm'));
     }
   })
   .catch(async () => {
